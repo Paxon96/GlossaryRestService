@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.paxon96</groupId>
     <artifactId>glossary</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>glossary</name>
     <description>Glossary for students of English philology</description>
 

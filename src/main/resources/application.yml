@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: ${DBURL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+
+server:
+  port: ${PORT:8080}
