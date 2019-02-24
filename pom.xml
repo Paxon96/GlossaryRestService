@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.paxon96</groupId>
     <artifactId>glossary</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <name>glossary</name>
     <description>Glossary for students of English philology</description>
 
@@ -65,8 +65,28 @@
         <!--<dependency>-->
             <!--<groupId>org.springframework.security</groupId>-->
             <!--<artifactId>spring-security-test</artifactId>-->
-            <!--<scope>test</scope>-->
         <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>5.1.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>5.1.4.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

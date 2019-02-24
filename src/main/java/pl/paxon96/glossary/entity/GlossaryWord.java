@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -25,5 +26,8 @@ public class GlossaryWord {
 
     @Column(name = "en_word")
     private String englishWorld;
+
+    @Column(name = "add_date")
+    private Timestamp addDate;
 
 }
