@@ -29,4 +29,19 @@ public class GlossaryService {
 
         glossaryWordRepository.save(glossaryWord);
     }
+
+    public void editWord(GlossaryWord wordToEdit){
+        GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordToEdit.getId());
+
+        if(!glossaryWord.getEnglishWorld().equalsIgnoreCase(wordToEdit.getEnglishWorld()) || !glossaryWord.getPolishWorld().equalsIgnoreCase(wordToEdit.getPolishWorld())){
+            glossaryWord.setPolishWorld(wordToEdit.getPolishWorld());
+            glossaryWord.setEnglishWorld(wordToEdit.getEnglishWorld());
+
+            glossaryWordRepository.save(glossaryWord);
+        }
+    }
+
+    public void deleteWord(int idWordToDelete){
+        glossaryWordRepository.delete(glossaryWordRepository.findGlossaryWordById(idWordToDelete));
+    }
 }

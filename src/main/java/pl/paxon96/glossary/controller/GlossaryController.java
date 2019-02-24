@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.paxon96.glossary.entity.GlossaryWord;
 import pl.paxon96.glossary.entity.GlossaryWordDTO;
+import pl.paxon96.glossary.repository.GlossaryWordRepository;
 import pl.paxon96.glossary.service.GlossaryService;
 
 import javax.validation.Valid;
@@ -22,6 +23,8 @@ public class GlossaryController {
 
     @Autowired
     private GlossaryService glossaryService;
+    @Autowired
+    private GlossaryWordRepository glossaryWordRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getGlossaryPage(){
@@ -30,6 +33,7 @@ public class GlossaryController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public String getAllWords(Model model){
+        model.asMap().clear();
         model.addAttribute("wordsList", glossaryService.getAllWordsFromDatabase());
         return "glossaryAllWords";
     }
@@ -44,10 +48,52 @@ public class GlossaryController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String postAddWord(Model model,
                               @ModelAttribute("glossaryWordDTO") @Valid GlossaryWordDTO glossaryWordDTO){
-
         glossaryService.createAndSaveNewWord(glossaryWordDTO.getPolishWord(), glossaryWordDTO.getEnglishWord());
-
         return getAddWord(model);
     }
 
+    @RequestMapping(value = "edit", method = RequestMethod.GET)
+    public String getEditWord(Model model, @RequestParam("wordId") int wordId){
+        model.asMap().clear();
+        model.addAttribute("wordToEdit",glossaryWordRepository.findGlossaryWordById(wordId));
+        return "glossaryEditWord";
+    }
+
+    @RequestMapping(value = "edit", method = RequestMethod.POST)
+    public String postEditWord(Model model,
+                               @RequestParam("wordId") int wordId,
+                               @RequestParam("polishWord") String polishWord,
+                               @RequestParam("englishWord") String englishWord){
+
+
+        glossaryService.editWord(GlossaryWord
+                .builder()
+                .id(wordId)
+                .polishWorld(polishWord)
+                .englishWorld(englishWord)
+                .build());
+
+        return getAllWords(model);
+    }
+
+
+    @RequestMapping(value = "delete", method = RequestMethod.GET)
+    public String getDeleteWord(Model model,
+                                @RequestParam("wordId") int wordId){
+
+        model.addAttribute("wordToDelete", glossaryWordRepository.findGlossaryWordById(wordId));
+
+        return "glossaryDeleteWord";
+    }
+
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public String postDeleteWord(Model model,
+                                @RequestParam("wordId") int wordId,
+                                @RequestParam("delete") String delete){
+
+        if(delete.equalsIgnoreCase("yes"))
+            glossaryService.deleteWord(wordId);
+
+        return getAllWords(model);
+    }
 }
