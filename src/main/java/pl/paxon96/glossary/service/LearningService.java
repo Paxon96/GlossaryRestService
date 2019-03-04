@@ -51,10 +51,17 @@ public class LearningService {
         return glossaryWords;
     }
 
-    public void manageWordAfterCorrectResponse(GlossaryWord glossaryWord) {
+    public void manageWordAfterCorrectAnswer(GlossaryWord glossaryWord) {
         glossaryWord.setCorrectRepetitionAmount(glossaryWord.getCorrectRepetitionAmount() + 1);
         if(glossaryWord.getCorrectRepetitionAmount() == repeatTimes)
             glossaryWord.setIsLearned(true);
         glossaryWordRepository.save(glossaryWord);
+    }
+
+    public void manageWordAfterWrongAnswer(GlossaryWord glossaryWord){
+        if(glossaryWord.getCorrectRepetitionAmount() >0){
+            glossaryWord.setCorrectRepetitionAmount(glossaryWord.getCorrectRepetitionAmount() - 1);
+            glossaryWordRepository.save(glossaryWord);
+        }
     }
 }

@@ -86,9 +86,10 @@ public class LearnController {
             if (!glossaryWord.getEnglishWorld().equalsIgnoreCase(wordToCheck)) {
                 model.addAttribute("wordTranslatorError", "Złe tłumaczenie");
                 model.addAttribute("correctWord", glossaryWord.getEnglishWorld());
+                learningService.manageWordAfterWrongAnswer(glossaryWord);
                 return "learninSessionPageError";
             }else {
-                learningService.manageWordAfterCorrectResponse(glossaryWord);
+                learningService.manageWordAfterCorrectAnswer(glossaryWord);
             }
 
         }
@@ -96,9 +97,10 @@ public class LearnController {
             if(!glossaryWord.getPolishWorld().equalsIgnoreCase(wordToCheck)){
                 model.addAttribute("wordTranslatorError", "Złe tłumaczenie");
                 model.addAttribute("correctWord", glossaryWord.getPolishWorld());
+                learningService.manageWordAfterWrongAnswer(glossaryWord);
                 return "learninSessionPageError";
             }else {
-                learningService.manageWordAfterCorrectResponse(glossaryWord);
+                learningService.manageWordAfterCorrectAnswer(glossaryWord);
             }
 
         return getSession(model);
