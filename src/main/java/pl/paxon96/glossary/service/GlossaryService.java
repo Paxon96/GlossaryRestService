@@ -1,7 +1,9 @@
 package pl.paxon96.glossary.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.paxon96.glossary.entity.GlossaryWord;
 import pl.paxon96.glossary.repository.GlossaryWordRepository;
 
@@ -16,6 +18,9 @@ public class GlossaryService {
 
     @Autowired
     private GlossaryWordRepository glossaryWordRepository;
+
+    @Value("${glossary.repeat}")
+    private int repeatTimes;
 
 
     public List<GlossaryWord> getAllWordsFromDatabase(){
@@ -47,5 +52,20 @@ public class GlossaryService {
 
     public void deleteWord(int idWordToDelete){
         glossaryWordRepository.delete(glossaryWordRepository.findGlossaryWordById(idWordToDelete));
+    }
+
+    public void setWordLearned(int wordId) {
+        GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordId);
+        glossaryWord.setIsLearned(true);
+        glossaryWord.setCorrectRepetitionAmount(repeatTimes);
+        glossaryWordRepository.save(glossaryWord);
+    }
+
+    public void setWordUnlearned(int wordId) {
+        GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordId);
+        glossaryWord.setIsLearned(false);
+        glossaryWord.setCorrectRepetitionAmount(0);
+
+        glossaryWordRepository.save(glossaryWord);
     }
 }

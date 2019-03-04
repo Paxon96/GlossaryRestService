@@ -100,12 +100,16 @@ public class GlossaryController {
     public String postRelearnWord(Model model,
                                  @RequestParam("wordId") int wordId){
 
-        GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordId);
-        glossaryWord.setIsLearned(false);
-        glossaryWord.setCorrectRepetitionAmount(0);
-
-        glossaryWordRepository.save(glossaryWord);
-
+        glossaryService.setWordUnlearned(wordId);
         return getAllWords(model);
     }
+
+    @RequestMapping(value = "learned", method = RequestMethod.POST)
+    public String postLearnedWord(Model model,
+                                  @RequestParam("wordId") int wordId){
+
+        glossaryService.setWordLearned(wordId);
+        return getAllWords(model);
+    }
+
 }

@@ -72,7 +72,14 @@
                     <div th:if ="${word.isLearned} == true">
                         <form th:action="@{/glossary/relearn}" th:method="post">
                             <button type="submit" class="btn btn-outline-dark" id="wordToRelearn" name="wordId"
-                                    th:value="${word.id}">Ucz ponownie
+                                    th:value="${word.id}">Do nauki
+                            </button>
+                        </form>
+                    </div>
+                    <div th:if ="${word.isLearned} == false">
+                        <form th:action="@{/glossary/learned}" th:method="post">
+                            <button type="submit" class="btn btn-outline-dark" id="wordToLearned" name="wordId"
+                                    th:value="${word.id}">Nauczone
                             </button>
                         </form>
                     </div>
