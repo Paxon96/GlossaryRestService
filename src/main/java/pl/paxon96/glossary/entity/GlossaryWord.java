@@ -27,6 +27,12 @@ public class GlossaryWord {
     @Column(name = "en_word")
     private String englishWorld;
 
+    @Column(name = "learned")
+    private Boolean isLearned;
+
+    @Column(name = "correct_repetition")
+    private int correctRepetitionAmount;
+
     @Column(name = "add_date")
     private Timestamp addDate;
 

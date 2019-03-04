@@ -39,6 +39,8 @@
             <tr>
                 <th>PL</th>
                 <th>EN</th>
+                <th>Nauczone?</th>
+                <th></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -47,6 +49,7 @@
                 th:style="${rowStat.odd} ? 'color: black' : 'color: black;'">
                 <td th:text="${word.polishWorld}"></td>
                 <td th:text="${word.englishWorld}"></td>
+                <td th:text="${word.isLearned}"></td>
                 <td>
                     <div>
                         <form th:action="@{/glossary/edit}" th:method="get">
@@ -61,6 +64,15 @@
                         <form th:action="@{/glossary/delete}" th:method="get">
                             <button type="submit" class="btn btn-outline-dark" id="wordToDelete" name="wordId"
                                     th:value="${word.id}">Usuń
+                            </button>
+                        </form>
+                    </div>
+                </td>
+                <td>
+                    <div th:if ="${word.isLearned} == true">
+                        <form th:action="@{/glossary/relearn}" th:method="post">
+                            <button type="submit" class="btn btn-outline-dark" id="wordToRelearn" name="wordId"
+                                    th:value="${word.id}">Ucz ponownie
                             </button>
                         </form>
                     </div>

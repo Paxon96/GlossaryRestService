@@ -6,7 +6,10 @@ import pl.paxon96.glossary.entity.GlossaryWord;
 import pl.paxon96.glossary.repository.GlossaryWordRepository;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GlossaryService {
@@ -16,7 +19,8 @@ public class GlossaryService {
 
 
     public List<GlossaryWord> getAllWordsFromDatabase(){
-        return glossaryWordRepository.findAll();
+        List<GlossaryWord> glossaryWords = glossaryWordRepository.findAll();
+        return glossaryWords.stream().sorted(Comparator.comparing(GlossaryWord::getPolishWorld)).collect(Collectors.toList());
     }
 
     public void createAndSaveNewWord(String polishWord, String englishWord){

@@ -2,11 +2,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.MySQL5Dialect
   datasource:
     url: ${DBURL}
     username: ${USERNAME}
     password: ${PASSWORD}
+    dialect: org.hibernate.dialect.MySQL5Dialect
 
 server:
   port: ${PORT:8080}
+
+glossary:
+  repeat: ${REPEAT_TIMES}
+  wordAmountPerSession: ${WORD_AMOUNT}

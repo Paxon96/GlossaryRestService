@@ -15,7 +15,6 @@ import pl.paxon96.glossary.repository.GlossaryWordRepository;
 import pl.paxon96.glossary.service.GlossaryService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("glossary")
@@ -93,6 +92,19 @@ public class GlossaryController {
 
         if(delete.equalsIgnoreCase("yes"))
             glossaryService.deleteWord(wordId);
+
+        return getAllWords(model);
+    }
+
+    @RequestMapping(value = "relearn", method = RequestMethod.POST)
+    public String postRelearnWord(Model model,
+                                 @RequestParam("wordId") int wordId){
+
+        GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordId);
+        glossaryWord.setIsLearned(false);
+        glossaryWord.setCorrectRepetitionAmount(0);
+
+        glossaryWordRepository.save(glossaryWord);
 
         return getAllWords(model);
     }
