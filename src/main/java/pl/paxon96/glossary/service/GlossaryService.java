@@ -34,6 +34,8 @@ public class GlossaryService {
                 .polishWorld(polishWord)
                 .englishWorld(englishWord)
                 .addDate(new Timestamp(System.currentTimeMillis()))
+                .isLearned(false)
+                .correctRepetitionAmount(0)
                 .build();
 
         glossaryWordRepository.save(glossaryWord);

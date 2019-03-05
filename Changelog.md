@@ -1,3 +1,7 @@
+0.0.8
+- docker push
+- learned status fix when adding new word
+
 0.0.7
 - docker push
 - refactoring
