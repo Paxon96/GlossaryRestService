@@ -1,3 +1,6 @@
+0.0.9
+- add redirect
+
 0.0.8
 - docker push
 - learned status fix when adding new word

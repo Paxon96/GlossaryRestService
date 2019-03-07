@@ -1,22 +1,17 @@
 package pl.paxon96.glossary.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@Controller
-@RequestMapping("/")
-public class MainController {
+@Controller @RequestMapping("/") public class MainController {
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String getMainPage(){
+    @RequestMapping(method = RequestMethod.GET) public String getMainPage() {
         return "index";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
+    @RequestMapping(value = "login", method = RequestMethod.GET) public String login(Model model, String error, String logout) {
 
         if (error != null)
             model.addAttribute("errorMsg", "Your username and password are invalid.");
@@ -27,8 +22,7 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String login() {
+    @RequestMapping(value = "login", method = RequestMethod.POST) public String login() {
         return "index";
     }
 }

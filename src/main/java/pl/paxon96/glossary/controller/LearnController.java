@@ -15,28 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Controller
-@RequestMapping("learning")
-public class LearnController {
+@Controller @RequestMapping("learning") public class LearnController {
 
-    @Value("${glossary.repeat}")
-    private int repeatTimes;
+    @Value("${glossary.repeat}") private int repeatTimes;
 
-    @Value("${glossary.wordAmountPerSession}")
-    private int wordsInSession;
+    @Value("${glossary.wordAmountPerSession}") private int wordsInSession;
 
-    @Autowired
-    private LearningService learningService;
+    @Autowired private LearningService learningService;
 
-    @Autowired
-    private GlossaryWordRepository glossaryWordRepository;
+    @Autowired private GlossaryWordRepository glossaryWordRepository;
 
     private List<GlossaryWord> glossaryWordsToLearn;
     private List<GlossaryWord> glossaryWordsLearnded = new ArrayList<>();
     private Random random = new Random();
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String getLearningPage(Model model) {
+    @RequestMapping(method = RequestMethod.GET) public String getLearningPage(Model model) {
         glossaryWordsToLearn = learningService.getRandomWordsToLearn(wordsInSession);
         model.addAttribute("repeat", repeatTimes);
         model.addAttribute("words", wordsInSession);
@@ -46,17 +39,16 @@ public class LearnController {
         return "learningPage";
     }
 
-    @RequestMapping(value = "session", method = RequestMethod.GET)
-    public String getSession(Model model){
+    @RequestMapping(value = "session", method = RequestMethod.GET) public String getSession(Model model) {
         model.asMap().clear();
 
-        if(glossaryWordsToLearn.size() == 0 || glossaryWordsToLearn.isEmpty())
-            return getEndSession(model);
+        if (glossaryWordsToLearn.size() == 0)
+            return "redirect:end";
 
         glossaryWordsToLearn = learningService.setWordLearnead(glossaryWordsToLearn, glossaryWordsLearnded);
 
-        if(glossaryWordsToLearn.size() == 0 || glossaryWordsToLearn.isEmpty())
-            return getEndSession(model);
+        if (glossaryWordsToLearn.size() == 0)
+            return "redirect:end";
 
         int wordIndex = random.nextInt(glossaryWordsToLearn.size());
 
@@ -66,50 +58,45 @@ public class LearnController {
 
         model.addAttribute("translation", plOrEn);
 
-        if(plOrEn == 1)
-            model.addAttribute("wordToTranslate",glossaryWordsToLearn.get(wordIndex).getPolishWorld());
+        if (plOrEn == 1)
+            model.addAttribute("wordToTranslate", glossaryWordsToLearn.get(wordIndex).getPolishWorld());
         else
-            model.addAttribute("wordToTranslate",glossaryWordsToLearn.get(wordIndex).getEnglishWorld());
+            model.addAttribute("wordToTranslate", glossaryWordsToLearn.get(wordIndex).getEnglishWorld());
 
         return "learningSessionPage";
     }
 
-    @RequestMapping(value = "check",method = RequestMethod.POST)
-    public String postCheckWord(Model model,
-                                @RequestParam("wordId") int wordId,
-                                @RequestParam("translation") int plOrEn,
-                                @RequestParam("wordToCheck") String wordToCheck){
+    @RequestMapping(value = "check", method = RequestMethod.POST)
+    public String postCheckWord(Model model, @RequestParam("wordId") int wordId, @RequestParam("translation") int plOrEn,
+            @RequestParam("wordToCheck") String wordToCheck) {
 
         GlossaryWord glossaryWord = glossaryWordRepository.findGlossaryWordById(wordId);
 
-        if(plOrEn == 1) {
+        if (plOrEn == 1) {
             if (!glossaryWord.getEnglishWorld().equalsIgnoreCase(wordToCheck)) {
                 model.addAttribute("wordTranslatorError", "Złe tłumaczenie");
                 model.addAttribute("correctWord", glossaryWord.getEnglishWorld());
                 learningService.manageWordAfterWrongAnswer(glossaryWord);
                 return "learninSessionPageError";
-            }else {
+            } else {
                 learningService.manageWordAfterCorrectAnswer(glossaryWord);
             }
 
+        } else if (!glossaryWord.getPolishWorld().equalsIgnoreCase(wordToCheck)) {
+            model.addAttribute("wordTranslatorError", "Złe tłumaczenie");
+            model.addAttribute("correctWord", glossaryWord.getPolishWorld());
+            learningService.manageWordAfterWrongAnswer(glossaryWord);
+            return "learninSessionPageError";
+        } else {
+            learningService.manageWordAfterCorrectAnswer(glossaryWord);
         }
-        else
-            if(!glossaryWord.getPolishWorld().equalsIgnoreCase(wordToCheck)){
-                model.addAttribute("wordTranslatorError", "Złe tłumaczenie");
-                model.addAttribute("correctWord", glossaryWord.getPolishWorld());
-                learningService.manageWordAfterWrongAnswer(glossaryWord);
-                return "learninSessionPageError";
-            }else {
-                learningService.manageWordAfterCorrectAnswer(glossaryWord);
-            }
 
-        return getSession(model);
+        return "redirect:session";
     }
 
-    @RequestMapping(value = "end", method = RequestMethod.GET)
-    public String getEndSession(Model model){
+    @RequestMapping(value = "end", method = RequestMethod.GET) public String getEndSession(Model model) {
         model.asMap().clear();
         model.addAttribute("learndedWords", glossaryWordsLearnded);
-        return "learningSeesionFinalPage";
+        return "learningSessionFinalPage";
     }
 }

@@ -1,8 +1,6 @@
 package pl.paxon96.glossary.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,69 +14,50 @@ import pl.paxon96.glossary.service.GlossaryService;
 
 import javax.validation.Valid;
 
-@Controller
-@RequestMapping("glossary")
-public class GlossaryController {
+@Controller @RequestMapping("glossary") public class GlossaryController {
 
-    @Autowired
-    private GlossaryService glossaryService;
-    @Autowired
-    private GlossaryWordRepository glossaryWordRepository;
+    @Autowired private GlossaryService glossaryService;
+    @Autowired private GlossaryWordRepository glossaryWordRepository;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String getGlossaryPage(){
+    @RequestMapping(method = RequestMethod.GET) public String getGlossaryPage() {
         return "glossaryPage";
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String getAllWords(Model model){
+    @RequestMapping(value = "/all", method = RequestMethod.GET) public String getAllWords(Model model) {
         model.asMap().clear();
         model.addAttribute("wordsList", glossaryService.getAllWordsFromDatabase());
         return "glossaryAllWords";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String getAddWord(Model model){
+    @RequestMapping(value = "/add", method = RequestMethod.GET) public String getAddWord(Model model) {
         model.asMap().clear();
         model.addAttribute("glossaryWordDTO", new GlossaryWordDTO());
         return "glossaryAddWord";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String postAddWord(Model model,
-                              @ModelAttribute("glossaryWordDTO") @Valid GlossaryWordDTO glossaryWordDTO){
+    public String postAddWord(Model model, @ModelAttribute("glossaryWordDTO") @Valid GlossaryWordDTO glossaryWordDTO) {
         glossaryService.createAndSaveNewWord(glossaryWordDTO.getPolishWord(), glossaryWordDTO.getEnglishWord());
-        return getAddWord(model);
+        return "redirect:add";
     }
 
-    @RequestMapping(value = "edit", method = RequestMethod.GET)
-    public String getEditWord(Model model, @RequestParam("wordId") int wordId){
+    @RequestMapping(value = "edit", method = RequestMethod.GET) public String getEditWord(Model model, @RequestParam("wordId") int wordId) {
         model.asMap().clear();
-        model.addAttribute("wordToEdit",glossaryWordRepository.findGlossaryWordById(wordId));
+        model.addAttribute("wordToEdit", glossaryWordRepository.findGlossaryWordById(wordId));
         return "glossaryEditWord";
     }
 
     @RequestMapping(value = "edit", method = RequestMethod.POST)
-    public String postEditWord(Model model,
-                               @RequestParam("wordId") int wordId,
-                               @RequestParam("polishWord") String polishWord,
-                               @RequestParam("englishWord") String englishWord){
+    public String postEditWord(Model model, @RequestParam("wordId") int wordId, @RequestParam("polishWord") String polishWord,
+            @RequestParam("englishWord") String englishWord) {
 
+        glossaryService.editWord(GlossaryWord.builder().id(wordId).polishWorld(polishWord).englishWorld(englishWord).build());
 
-        glossaryService.editWord(GlossaryWord
-                .builder()
-                .id(wordId)
-                .polishWorld(polishWord)
-                .englishWorld(englishWord)
-                .build());
-
-        return getAllWords(model);
+        return "redirect:all";
     }
 
-
     @RequestMapping(value = "delete", method = RequestMethod.GET)
-    public String getDeleteWord(Model model,
-                                @RequestParam("wordId") int wordId){
+    public String getDeleteWord(Model model, @RequestParam("wordId") int wordId) {
 
         model.addAttribute("wordToDelete", glossaryWordRepository.findGlossaryWordById(wordId));
 
@@ -86,30 +65,26 @@ public class GlossaryController {
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
-    public String postDeleteWord(Model model,
-                                @RequestParam("wordId") int wordId,
-                                @RequestParam("delete") String delete){
+    public String postDeleteWord(Model model, @RequestParam("wordId") int wordId, @RequestParam("delete") String delete) {
 
-        if(delete.equalsIgnoreCase("yes"))
+        if (delete.equalsIgnoreCase("yes"))
             glossaryService.deleteWord(wordId);
 
-        return getAllWords(model);
+        return "redirect:all";
     }
 
     @RequestMapping(value = "relearn", method = RequestMethod.POST)
-    public String postRelearnWord(Model model,
-                                 @RequestParam("wordId") int wordId){
+    public String postRelearnWord(Model model, @RequestParam("wordId") int wordId) {
 
         glossaryService.setWordUnlearned(wordId);
-        return getAllWords(model);
+        return "redirect:all";
     }
 
     @RequestMapping(value = "learned", method = RequestMethod.POST)
-    public String postLearnedWord(Model model,
-                                  @RequestParam("wordId") int wordId){
+    public String postLearnedWord(Model model, @RequestParam("wordId") int wordId) {
 
         glossaryService.setWordLearned(wordId);
-        return getAllWords(model);
+        return "redirect:all";
     }
 
 }
